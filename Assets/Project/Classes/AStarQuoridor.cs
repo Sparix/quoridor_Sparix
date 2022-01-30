@@ -26,7 +26,7 @@ namespace Project.Classes {
             bool flag;
             foreach (var pawn in pawns) {
                 flag = false;
-                _finishes = CalculateFinishes(field.GetLength(0), field.GetLength(1), pawn.IsWinner);
+                _finishes = CalculateFinishes(field.GetLength(0), field.GetLength(1), pawn.WinnerCondition);
                 foreach (var finish in _finishes) {
                     var path = AStar<FieldSpace>.FindPath(field, pawn.Pos, finish, heuristicLength);
                     if (path == null) continue;

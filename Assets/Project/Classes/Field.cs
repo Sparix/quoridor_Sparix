@@ -29,6 +29,18 @@ namespace Project.Classes {
         public static float ManhattanLengthFloat(Point p1, Point p2) {
             return Math.Abs(p1.X - p2.X) + Math.Abs(p1.Y - p2.Y);
         }
+
+        public override string ToString() {
+            return $"y = {Y}, x = {X}";
+        }
+
+        public override bool Equals(object obj) {
+            if (!(obj is Point point)) {
+                return false;
+            }
+
+            return X == point.X && Y == point.Y;
+        }
     }
 
     public class Field : ICloneable {

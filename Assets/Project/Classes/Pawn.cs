@@ -21,21 +21,24 @@ namespace Project.Classes {
 
         public Priority PawnPriority { get; }
 
+        public Predicate<Point> WinnerCondition { get; private set; }
         public int Y => Pos.Y;
         public int X => Pos.X;
 
-        public Predicate<Point> IsWinner;
+        public bool IsWinner => WinnerCondition(Pos);
 
-        private List<Point> _possibleDirs  = new List<Point>();
+        private List<Point> _possibleDirs = new List<Point>();
         private bool _possibleDirsUpdated;
-        public List<Point> PossibleDirections => _possibleDirsUpdated ? new List<Point>(_possibleDirs) : GetPossibleDirections();
+
+        public List<Point> PossibleDirections =>
+            _possibleDirsUpdated ? new List<Point>(_possibleDirs) : GetPossibleDirections();
 
         public Pawn(Point pos, Player owner, Field field, Predicate<Point> winCondition) {
             Pos = pos;
             Owner = owner;
             Field = field;
             PawnPriority = (Priority) NumOfCreatedPawns;
-            IsWinner = winCondition;
+            WinnerCondition = winCondition;
             NumOfCreatedPawns += 1;
         }
 
@@ -48,7 +51,6 @@ namespace Project.Classes {
             Pos = newPos;
             _possibleDirsUpdated = false;
             return true;
-
         }
 
         public List<Point> GetPossibleDirections() {
@@ -67,21 +69,24 @@ namespace Project.Classes {
             if (X == 0 || Field.FieldSpaces[Y, X - 1].Type == BlockType.Wall) {
                 return;
             }
-            if (/*Field.FieldSpaces[Y, X - 2].Type == BlockType.Platform && */!IsPosTaken(other, Y, X - 2)) {
+
+            if ( /*Field.FieldSpaces[Y, X - 2].Type == BlockType.Platform && */!IsPosTaken(other, Y, X - 2)) {
                 _possibleDirs.Add(new Point(Y, X - 2));
                 return;
             }
-            
+
             if (X >= 4 && Field.FieldSpaces[Y, X - 3].Type != BlockType.Wall && !IsPosTaken(other, Y, X - 4)) {
                 _possibleDirs.Add(new Point(Y, X - 4));
                 return;
             }
 
-            if (/*Y >= 2 && */Field.FieldSpaces[Y - 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
+            if ( /*Y >= 2 && */
+                Field.FieldSpaces[Y - 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X - 2));
             }
 
-            if (/*Y <= Field.FieldSpaces.GetLength(0) - 3 && */ Field.FieldSpaces[Y + 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y + 2, X - 2)) {
+            if ( /*Y <= Field.FieldSpaces.GetLength(0) - 3 && */
+                Field.FieldSpaces[Y + 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y + 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y + 2, X - 2));
             }
         }
@@ -92,21 +97,24 @@ namespace Project.Classes {
             if (X == xLen - 1 || Field.FieldSpaces[Y, X + 1].Type == BlockType.Wall) {
                 return;
             }
-            if (/*Field.FieldSpaces[Y, X + 2].Type == BlockType.Platform && */!IsPosTaken(other, Y, X + 2)) {
+
+            if ( /*Field.FieldSpaces[Y, X + 2].Type == BlockType.Platform && */!IsPosTaken(other, Y, X + 2)) {
                 _possibleDirs.Add(new Point(Y, X + 2));
                 return;
             }
-            
+
             if (X <= xLen - 5 && Field.FieldSpaces[Y, X + 3].Type != BlockType.Wall && !IsPosTaken(other, Y, X + 4)) {
                 _possibleDirs.Add(new Point(Y, X + 4));
                 return;
             }
 
-            if (/*Y >= 2 && */Field.FieldSpaces[Y - 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
+            if ( /*Y >= 2 && */
+                Field.FieldSpaces[Y - 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X - 2));
             }
 
-            if (/*Y <= Field.FieldSpaces.GetLength(0) - 3 && */ Field.FieldSpaces[Y + 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y + 2, X - 2)) {
+            if ( /*Y <= Field.FieldSpaces.GetLength(0) - 3 && */
+                Field.FieldSpaces[Y + 1, X - 2].Type != BlockType.Wall && !IsPosTaken(other, Y + 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y + 2, X - 2));
             }
         }
@@ -115,21 +123,24 @@ namespace Project.Classes {
             if (Y == 0 || Field.FieldSpaces[Y - 1, X].Type == BlockType.Wall) {
                 return;
             }
-            if (/*Field.FieldSpaces[Y - 2, X].Type == BlockType.Platform && */!IsPosTaken(other, Y - 2, X)) {
+
+            if ( /*Field.FieldSpaces[Y - 2, X].Type == BlockType.Platform && */!IsPosTaken(other, Y - 2, X)) {
                 _possibleDirs.Add(new Point(Y, X - 2));
                 return;
             }
-            
+
             if (Y >= 4 && Field.FieldSpaces[Y - 3, X].Type != BlockType.Wall && !IsPosTaken(other, Y - 4, X)) {
                 _possibleDirs.Add(new Point(Y - 4, X));
                 return;
             }
 
-            if (/*X >= 2 && */Field.FieldSpaces[Y - 2, X - 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
+            if ( /*X >= 2 && */
+                Field.FieldSpaces[Y - 2, X - 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X - 2));
             }
 
-            if (/*X <= Field.FieldSpaces.GetLength(1) - 3 && */ Field.FieldSpaces[Y - 2, X + 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X + 2)) {
+            if ( /*X <= Field.FieldSpaces.GetLength(1) - 3 && */
+                Field.FieldSpaces[Y - 2, X + 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X + 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X + 2));
             }
         }
@@ -139,21 +150,24 @@ namespace Project.Classes {
             if (Y == yLen - 1 || Field.FieldSpaces[Y + 1, X].Type == BlockType.Wall) {
                 return;
             }
-            if (/*Field.FieldSpaces[Y + 2, X].Type == BlockType.Platform && */!IsPosTaken(other, Y + 2, X)) {
+
+            if ( /*Field.FieldSpaces[Y + 2, X].Type == BlockType.Platform && */!IsPosTaken(other, Y + 2, X)) {
                 _possibleDirs.Add(new Point(Y + 2, X));
                 return;
             }
-            
+
             if (Y <= yLen - 5 && Field.FieldSpaces[Y + 3, X].Type != BlockType.Wall && !IsPosTaken(other, Y + 4, X)) {
                 _possibleDirs.Add(new Point(Y + 4, X));
                 return;
             }
 
-            if (/*X >= 2 && */Field.FieldSpaces[Y - 2, X - 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
+            if ( /*X >= 2 && */
+                Field.FieldSpaces[Y - 2, X - 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X - 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X - 2));
             }
 
-            if (/*X <= Field.FieldSpaces.GetLength(1) - 3 && */ Field.FieldSpaces[Y - 2, X + 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X + 2)) {
+            if ( /*X <= Field.FieldSpaces.GetLength(1) - 3 && */
+                Field.FieldSpaces[Y - 2, X + 1].Type != BlockType.Wall && !IsPosTaken(other, Y - 2, X + 2)) {
                 _possibleDirs.Add(new Point(Y - 2, X + 2));
             }
         }

@@ -33,5 +33,15 @@ namespace Project.Classes {
 
             return result;
         }
+
+        public static T GetNextCycled<T>(this IEnumerator<T> enumerator) {
+            if (enumerator.MoveNext()) {
+                return enumerator.Current;
+            }
+            enumerator.Reset();
+            enumerator.MoveNext();
+            return enumerator.Current;
+
+        }
     }
 }
