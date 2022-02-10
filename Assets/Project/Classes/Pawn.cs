@@ -14,7 +14,14 @@ namespace Project.Classes {
             Fourth = 3
         }
 
-        public Point Pos { get; private set; }
+         public Point Pos {
+            get => _pos;
+            private set {
+                if (_pos.Equals(value)) { return; }
+                _pos = value;
+                PosChanged?.Invoke();
+            }
+        }
 
         public Player Owner { get; }
         public Field Field { get; }
@@ -29,6 +36,9 @@ namespace Project.Classes {
 
         private List<Point> _possibleDirs = new List<Point>();
         private bool _possibleDirsUpdated;
+        
+        private Point _pos;
+        public event Action PosChanged;
 
         public List<Point> PossibleDirections =>
             _possibleDirsUpdated ? new List<Point>(_possibleDirs) : GetPossibleDirections();
@@ -125,7 +135,7 @@ namespace Project.Classes {
             }
 
             if ( /*Field.FieldSpaces[Y - 2, X].Type == BlockType.Platform && */!IsPosTaken(other, Y - 2, X)) {
-                _possibleDirs.Add(new Point(Y, X - 2));
+                _possibleDirs.Add(new Point(Y - 2, X));
                 return;
             }
 
