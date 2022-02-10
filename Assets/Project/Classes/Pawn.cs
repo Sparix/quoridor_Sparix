@@ -14,7 +14,7 @@ namespace Project.Classes {
             Fourth = 3
         }
 
-         public Point Pos {
+        public Point Pos {
             get => _pos;
             private set {
                 if (_pos.Equals(value)) { return; }
@@ -36,7 +36,6 @@ namespace Project.Classes {
 
         private List<Point> _possibleDirs = new List<Point>();
         private bool _possibleDirsUpdated;
-        
         private Point _pos;
         public event Action PosChanged;
 
