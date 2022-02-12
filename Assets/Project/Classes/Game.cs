@@ -11,6 +11,12 @@ namespace Project.Classes {
         public Field Field { get; private set; }
         public List<Player> Players { get; private set; }
 
+        public event Action OnNextTurn;
+
+        public void AddHandlerForOnNextTurn(int index, Action newHandler) {
+            OnNextTurn = OnNextTurn.AddHandlerOnIndex(index, newHandler);
+        }
+
         public bool GameRunning {
             get => _gameRunning;
             private set {
@@ -30,7 +36,7 @@ namespace Project.Classes {
         public event Action GameStarted;
         public event Action<Player> GameFinished;
 
-        public Game(int xSize, int ySize, List<Player> players) {
+        public Game(int ySize, int xSize, List<Player> players) {
             if (players.Count < 2) {
                 throw new ArgumentException("There are must be at least 2 players");
             }
@@ -100,6 +106,7 @@ namespace Project.Classes {
             await CurrentPlayer.MakeMove();
             CurrentPlayer.myTurn = false;
             CurrentPlayer = _playersEnumerator.GetNextCycled();
+            OnNextTurn?.Invoke();
         }
 
         public void StartGame() {
@@ -110,6 +117,7 @@ namespace Project.Classes {
             GameRunning = true;
             _playersEnumerator.Reset();
             CurrentPlayer = _playersEnumerator.GetNextCycled();
+            OnNextTurn?.Invoke();
             _waitTask = WaitForMove();
         }
 
