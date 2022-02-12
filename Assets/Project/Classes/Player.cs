@@ -1,13 +1,29 @@
-﻿using System.Threading.Tasks;
-using Project.Interfaces;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Project.Classes {
     public abstract class Player {
         public bool myTurn;
         private bool _moveDone;
+
+        private int _numOfWalls;
+
         // private IPlayerController _playerController;
         public Pawn Pawn { get; set; }
-        public int NumOfWalls { get; private set; }
+
+        public int NumOfWalls {
+            get => _numOfWalls;
+            private set {
+                if (_numOfWalls == value) {
+                    return;
+                }
+
+                _numOfWalls = value;
+                NumOfWallsChanged?.Invoke();
+            }
+        }
+
+        public event Action NumOfWallsChanged;
 
         public Player(Pawn pawn = null, int numOfWalls = Consts.DEFAULT_NUM_OF_WALLS) {
             Pawn = pawn;

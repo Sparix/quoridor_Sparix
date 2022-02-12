@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Project.Classes;
 using UnityEngine;
 
@@ -27,23 +26,8 @@ namespace Project.Scripts {
             Game.StartGame();
         }
 
-        private int p1W;
-        private int p2W;
-
         public void Update() {
             Game.Tick();
-            // Debug.Log($"Cur ind = {Game.Players.IndexOf(Game.CurrentPlayer)}");
-            // if (p1W != Game.Players[0].NumOfWalls) {
-            //     Debug.Log($"player 1: {Game.Players[0].NumOfWalls}");
-            //     p1W = Game.Players[0].NumOfWalls;
-            // }
-            //
-            // if (p2W != Game.Players[1].NumOfWalls) {
-            //     Debug.Log($"player 2: {Game.Players[1].NumOfWalls}");
-            //     p2W = Game.Players[1].NumOfWalls;
-            // }
-            //
-            // Debug.Log($"player 2: {Game.Players[1].Pawn.Pos}");
         }
     }
 }

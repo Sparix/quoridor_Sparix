@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Project.Interfaces;
 
 namespace Project.Classes {
     public static class AStarQuoridor {
