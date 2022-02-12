@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Project.Classes;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Project.Scripts {
     public class PawnPlacer : MonoBehaviour {
@@ -47,10 +45,15 @@ namespace Project.Scripts {
         }
 
         private void Highlight() {
+            if (!gameManager.Game.GameRunning) {
+                return;
+            }
+
             var curPlayer = gameManager.CurrentPlayer;
             if (!(curPlayer is LocalPlayer)) {
                 return;
             }
+
             var dirs = curPlayer.Pawn.GetPossibleDirections();
             foreach (var place in _places) {
                 foreach (var dir in dirs) {
@@ -60,9 +63,5 @@ namespace Project.Scripts {
                 }
             }
         }
-        
-        // private void Update() {
-            // Highlight();
-        // }
     }
 }

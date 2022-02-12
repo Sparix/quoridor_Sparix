@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Project.Classes {
@@ -10,12 +9,7 @@ namespace Project.Classes {
         private IEnumerator<Player> _playersEnumerator;
         public Field Field { get; private set; }
         public List<Player> Players { get; private set; }
-
-        public event Action OnNextTurn;
-
-        public void AddHandlerForOnNextTurn(int index, Action newHandler) {
-            OnNextTurn = OnNextTurn.AddHandlerOnIndex(index, newHandler);
-        }
+        public Player CurrentPlayer { get; private set; }
 
         public bool GameRunning {
             get => _gameRunning;
@@ -28,13 +22,20 @@ namespace Project.Classes {
                 if (_gameRunning) {
                     GameStarted?.Invoke();
                 }
+                else {
+                    GameFinished?.Invoke();
+                }
             }
         }
 
-        public Player CurrentPlayer { get; private set; }
-
         public event Action GameStarted;
-        public event Action<Player> GameFinished;
+        public event Action GameFinished;
+        public event Action<Player> GameFinishedWithWinner;
+        public event Action OnNextTurn;
+
+        public void AddHandlerForOnNextTurn(int index, Action newHandler) {
+            OnNextTurn = OnNextTurn.AddHandlerOnIndex(index, newHandler);
+        }
 
         public Game(int ySize, int xSize, List<Player> players) {
             if (players.Count < 2) {
@@ -84,6 +85,7 @@ namespace Project.Classes {
             if (!GameRunning) return;
 
             if (_waitTask.IsCompleted && !IsThereWinner(out var winner)) {
+                OnNextTurn?.Invoke();
                 _waitTask = WaitForMove();
             }
         }
@@ -106,7 +108,6 @@ namespace Project.Classes {
             await CurrentPlayer.MakeMove();
             CurrentPlayer.myTurn = false;
             CurrentPlayer = _playersEnumerator.GetNextCycled();
-            OnNextTurn?.Invoke();
         }
 
         public void StartGame() {
@@ -121,15 +122,9 @@ namespace Project.Classes {
             _waitTask = WaitForMove();
         }
 
-        private void FinishGame(Player Player) {
-            // if (!GameRunning) {
-            //     throw new Exception("Game isn't going");
-            // }
-            //
-            // GameRunning = false;
-            // _waitTask = null;
+        private void FinishGame(Player player) {
             CancelGame();
-            GameFinished?.Invoke(Player);
+            GameFinishedWithWinner?.Invoke(player);
         }
 
         public void CancelGame() {
