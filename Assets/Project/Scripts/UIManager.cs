@@ -16,26 +16,24 @@ namespace Project.Scripts {
 
         private /*async*/ void Start() {
             DeactivateRestartButton();
-
-            if (gameManager == null) {
-                gameManager = GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
-            }
-
-            // while (gameManager.Game == null) {
-                // await Task.Yield();
-            // }
+            CheckInitialization();
 
             var players = gameManager.Game.Players;
             p1 = players[0];
             p2 = players[1];
             UpdateNumOfWallsP1();
             UpdateNumOfWallsP2();
+            // todo unsubscribe
             p1.NumOfWallsChanged += UpdateNumOfWallsP1;
             p2.NumOfWallsChanged += UpdateNumOfWallsP2;
             
             restartButton.onClick.AddListener(RestartGame);
             gameManager.Game.GameStarted += DeactivateRestartButton;
             gameManager.Game.GameFinished += ActivateRestartButton;
+        }
+        
+        private void CheckInitialization() {
+            gameManager ??= GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
         }
 
         private void UpdateNumOfWallsText(Player player, TMP_Text textComponent) {

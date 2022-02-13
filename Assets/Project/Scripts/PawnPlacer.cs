@@ -8,7 +8,7 @@ namespace Project.Scripts {
     public class PawnPlacer : MonoBehaviour {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private List<GameObject> playersPawns;
-        private PlaceForPawn[] _places;
+        [SerializeField] private PlaceForPawn[] places;
         private GameObject _selectedWallGO;
         private Wall _selectedWall;
         private Renderer _selectedWallRenderer;
@@ -17,11 +17,7 @@ namespace Project.Scripts {
         private List<Pawn> _pawns;
 
         private void Start() {
-            if (gameManager == null) {
-                gameManager = GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
-            }
-
-            _places = FindObjectsOfType<PlaceForPawn>();
+            CheckInitialization();
             _pawns = gameManager.Game.Players.Select(p => p.Pawn).ToList();
             var updatePositions = new Action[] {
                 () => UpdatePosition(0),
@@ -38,10 +34,15 @@ namespace Project.Scripts {
             gameManager.Game.OnNextTurn += Highlight;
         }
 
+        private void CheckInitialization() {
+            gameManager ??= GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
+            places ??= FindObjectsOfType<PlaceForPawn>();
+        }
+
         private void UpdatePosition(int i) {
             var pos = _pawns[i].Pos;
             playersPawns[i].transform.position =
-                _places.First(place => place.GetX == pos.X && place.GetY == pos.Y).transform.position;
+                places.First(place => place.GetX == pos.X && place.GetY == pos.Y).transform.position;
         }
 
         private void Highlight() {
@@ -55,7 +56,7 @@ namespace Project.Scripts {
             }
 
             var dirs = curPlayer.Pawn.GetPossibleDirections();
-            foreach (var place in _places) {
+            foreach (var place in places) {
                 foreach (var dir in dirs) {
                     if (dir.Y == place.GetY && dir.X == place.GetX) {
                         place.Highlight();

@@ -10,8 +10,8 @@ namespace Project.Scripts {
         public Player CurrentPlayer => Game.CurrentPlayer;
 
         private void Awake() {
-            // CreatePlayerVsPlayer();
-            CreatePlayerVsBot();
+            CreatePlayerVsPlayer();
+            // CreatePlayerVsBot();
         }
 
         public void CreatePlayerVsPlayer() {
