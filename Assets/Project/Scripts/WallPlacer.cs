@@ -45,6 +45,10 @@ namespace Project.Scripts {
         }
 
         private void Update() {
+            if (!gameManager.Game.GameRunning) {
+                return;
+            }
+
             CheckForInput(KeyCode.Alpha1, Wall.Type.Vertical);
             CheckForInput(KeyCode.Alpha2, Wall.Type.Horizontal);
 

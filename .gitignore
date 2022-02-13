@@ -1,4 +1,4 @@
-﻿# Default ignored files
+# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
@@ -16,7 +16,7 @@
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
-#/[Bb]uild/
+/[Bb]uild/
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
