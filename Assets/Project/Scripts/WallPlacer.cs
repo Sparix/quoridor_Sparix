@@ -6,11 +6,12 @@ namespace Project.Scripts {
     public class WallPlacer : MonoBehaviour {
         [SerializeField] private Camera camera;
         [SerializeField] private GameManager gameManager;
+        [SerializeField] private WallPlacerController controller;
         [SerializeField] private GameObject horizontalWall;
         [SerializeField] private GameObject verticalWall;
         [SerializeField] private float maximumMagnetRange = 0.3f;
+        [SerializeField] private PlaceForWall[] places;
         private Plane _boardPlane;
-        private PlaceForWall[] _places;
         private GameObject _selectedWallGO;
         private Wall _selectedWall;
         private Renderer _selectedWallRenderer;
@@ -20,28 +21,23 @@ namespace Project.Scripts {
         public bool PlacingWall { get; private set; }
 
         private void Awake() {
-            if (camera == null) {
-                camera = Camera.main;
-            }
-
-            if (gameManager == null) {
-                gameManager = GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
-            }
-
-            _places = FindObjectsOfType<PlaceForWall>();
+            CheckInitialization();
+            SubscribeToControllerEvents();
             _boardPlane = new Plane(Vector3.up,
-                _places.Length > 0 ? _places[0].transform.position : transform.position);
+                places.Length > 0 ? places[0].transform.position : transform.position);
         }
 
-        private void CheckForInput(KeyCode keyCode, Wall.Type type) {
-            if (Input.GetKeyDown(keyCode)) {
-                if (_selectedWallGO != null && _type == type) {
-                    DestroySelectedWall();
-                    return;
-                }
-
-                SelectWall(type);
-            }
+        private void CheckInitialization() {
+            camera ??= Camera.main;
+            gameManager ??= GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
+            controller ??= FindObjectOfType<WallPlacerController>();
+            places ??= FindObjectsOfType<PlaceForWall>();
+        }
+        
+        private void SubscribeToControllerEvents() {
+            controller.OnVerticalWallKeyDown += () => SelectWall(Wall.Type.Vertical);
+            controller.OnHorizontalWallKeyDown += () => SelectWall(Wall.Type.Horizontal);
+            controller.OnTrySetWallKeyDown += TrySetWall;
         }
 
         private void Update() {
@@ -49,15 +45,7 @@ namespace Project.Scripts {
                 return;
             }
 
-            CheckForInput(KeyCode.Alpha1, Wall.Type.Vertical);
-            CheckForInput(KeyCode.Alpha2, Wall.Type.Horizontal);
-
             if (_selectedWallGO == null) {
-                return;
-            }
-
-            if (Input.GetMouseButtonUp(0)) {
-                TrySetWall();
                 return;
             }
 
@@ -83,7 +71,7 @@ namespace Project.Scripts {
             if (_boardPlane.Raycast(ray, out var position)) {
                 var point = ray.GetPoint(position);
                 var closestDistance = float.PositiveInfinity;
-                foreach (var place in _places) {
+                foreach (var place in places) {
                     var dist = Vector3.Distance(point, place.transform.position);
                     if (dist < closestDistance) {
                         closestDistance = dist;
@@ -108,6 +96,9 @@ namespace Project.Scripts {
         public void SelectWall(Wall.Type type) {
             if (_selectedWallGO != null) {
                 DestroySelectedWall();
+                if (_type == type) {
+                    return;
+                }
             }
 
             PlacingWall = true;

@@ -7,26 +7,24 @@ namespace Project.Scripts {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private WallPlacer wallPlacer;
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private PlaceForPawnController controller;
         [Range(0, 1f)] [SerializeField] private float radius = 0.01f;
         [SerializeField] private int y;
         [SerializeField] private int x;
         private int _highlightCounter = 0;
-        private Task _highlightTask;
         public int GetY => y;
         public int GetX => x;
 
         private void Start() {
-            if (gameManager == null) {
-                gameManager = GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
-            }
+            CheckInitialization();
+            controller.OnClick += TryMove;
+        }
 
-            if (wallPlacer == null) {
-                wallPlacer = FindObjectOfType<WallPlacer>();
-            }
-
-            if (meshRenderer == null) {
-                meshRenderer = GetComponent<MeshRenderer>();
-            }
+        private void CheckInitialization() {
+            controller ??= GetComponent<PlaceForPawnController>();
+            gameManager ??= GameObject.FindGameObjectWithTag(Consts.GAME_MANAGER_TAG).GetComponent<GameManager>();
+            wallPlacer ??= FindObjectOfType<WallPlacer>();
+            meshRenderer ??= GetComponent<MeshRenderer>();
         }
 
         private void OnDrawGizmos() {
@@ -34,10 +32,7 @@ namespace Project.Scripts {
             Gizmos.DrawSphere(transform.position, radius);
         }
 
-        // todo move to Controller
-        private void OnMouseDown() {
-            // todo may not working on mobile 
-            // Debug.Log($"Click on \ny = {y}\nx = {x}");\
+        private void TryMove() {
             if (wallPlacer.PlacingWall) {
                 return;
             }
