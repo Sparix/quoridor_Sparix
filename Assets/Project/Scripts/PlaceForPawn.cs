@@ -52,9 +52,9 @@ namespace Project.Scripts {
             _highlightCounter++;
             var nextTurn = false;
             void OnNextTurn() => nextTurn = true;
-            // void OnGameFinished() => nextTurn = true;
+            void OnGameFinished() => nextTurn = true;
             gameManager.Game.OnNextTurn += OnNextTurn;
-            // gameManager.Game.GameFinished += OnGameFinished;
+            gameManager.Game.GameFinished += OnGameFinished;
             while (_highlightCounter > 1) {
                 await Task.Yield();
             }
@@ -65,7 +65,7 @@ namespace Project.Scripts {
             }
 
             gameManager.Game.OnNextTurn -= OnNextTurn;
-            // gameManager.Game.GameFinished -= OnGameFinished;
+            gameManager.Game.GameFinished -= OnGameFinished;
             _highlightCounter--;
             meshRenderer.enabled = false;
         }
