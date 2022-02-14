@@ -1,8 +1,11 @@
 using System.Threading.Tasks;
 using Project.Classes;
+using Project.Classes.Field;
+using Project.Classes.Player;
+using Project.Scripts.Wall;
 using UnityEngine;
 
-namespace Project.Scripts {
+namespace Project.Scripts.Pawn {
     public class PlaceForPawn : MonoBehaviour {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private WallPlacer wallPlacer;

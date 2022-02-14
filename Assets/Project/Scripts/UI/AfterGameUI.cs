@@ -1,4 +1,5 @@
 ﻿using Project.Classes;
+using Project.Classes.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,7 +55,7 @@ namespace Project.Scripts.UI {
         private void DeactivateRestartButton() => DeactivateGameObject(restartButton.gameObject);
 
         private void ActivateWinnerText(Player winner) {
-            winnerText.text = Consts.DEFAULT_WINNER_CONGRATULATION + (winner.Pawn.PawnPriority == Pawn.Priority.First ? "RED" : "GREEN");
+            winnerText.text = Consts.DEFAULT_WINNER_CONGRATULATION + (winner.Pawn.PawnPriority == Classes.Field.Pawn.Priority.First ? "RED" : "GREEN");
             ActivateGameObject(winnerText.gameObject);
         }
 

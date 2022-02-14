@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Project.Classes;
+using Project.Classes.Field;
+using Project.Classes.Player;
 using UnityEngine;
 
 namespace Project.Scripts {

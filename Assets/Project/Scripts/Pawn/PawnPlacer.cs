@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Project.Classes;
+using Project.Classes.Player;
 using UnityEngine;
 
-namespace Project.Scripts {
+namespace Project.Scripts.Pawn {
     public class PawnPlacer : MonoBehaviour {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private List<GameObject> playersPawns;
         [SerializeField] private PlaceForPawn[] places;
-        private List<Pawn> _pawns = new List<Pawn>();
+        private List<Classes.Field.Pawn> _pawns = new List<Classes.Field.Pawn>();
 
         private Action[] _updatePositions;
 

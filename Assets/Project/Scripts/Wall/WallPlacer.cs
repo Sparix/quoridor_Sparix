@@ -2,7 +2,7 @@
 using Project.Classes;
 using UnityEngine;
 
-namespace Project.Scripts {
+namespace Project.Scripts.Wall {
     public class WallPlacer : MonoBehaviour {
         [SerializeField] private Camera camera;
         [SerializeField] private GameManager gameManager;
@@ -13,9 +13,9 @@ namespace Project.Scripts {
         [SerializeField] private PlaceForWall[] places;
         private Plane _boardPlane;
         private GameObject _selectedWallGO;
-        private Wall _selectedWall;
+        private Classes.Field.Wall _selectedWall;
         private Renderer _selectedWallRenderer;
-        private Wall.Type _type;
+        private Classes.Field.Wall.Type _type;
         private PlaceForWall _closestPlace;
 
         public bool PlacingWall { get; private set; }
@@ -59,11 +59,11 @@ namespace Project.Scripts {
         }
 
         private void SelectVerticalWall() {
-            SelectWall(Wall.Type.Vertical);
+            SelectWall(Classes.Field.Wall.Type.Vertical);
         }
 
         private void SelectHorizontalWall() {
-            SelectWall(Wall.Type.Horizontal);
+            SelectWall(Classes.Field.Wall.Type.Horizontal);
         }
 
         private void Update() {
@@ -80,7 +80,7 @@ namespace Project.Scripts {
 
         private void TrySetWall() {
             if (_selectedWall == null) return;
-            if (gameManager.CurrentPlayer.TrySetWall(new Wall(_closestPlace.GetY, _closestPlace.GetX, _type))) {
+            if (gameManager.CurrentPlayer.TrySetWall(new Classes.Field.Wall(_closestPlace.GetY, _closestPlace.GetX, _type))) {
                 // if (_selectedWall != null && gameManager.Field.TrySetWall(_selectedWall)) {
                 _selectedWallGO.transform.parent = _closestPlace.gameObject.transform;
                 _selectedWallRenderer.material.color = Color.white;
@@ -107,7 +107,7 @@ namespace Project.Scripts {
 
                 if (closestDistance < maximumMagnetRange) {
                     _selectedWallGO.transform.position = _closestPlace.transform.position;
-                    _selectedWall = new Wall(_closestPlace.GetY, _closestPlace.GetX, _type);
+                    _selectedWall = new Classes.Field.Wall(_closestPlace.GetY, _closestPlace.GetX, _type);
                     ChangeWallOnAvailability(gameManager.Field.CanSetWall(_selectedWall));
                 }
                 else {
@@ -119,7 +119,7 @@ namespace Project.Scripts {
             }
         }
 
-        public void SelectWall(Wall.Type type) {
+        public void SelectWall(Classes.Field.Wall.Type type) {
             if (_selectedWallGO != null) {
                 DestroySelectedWall();
                 if (_type == type) {
@@ -130,8 +130,8 @@ namespace Project.Scripts {
             PlacingWall = true;
             _type = type;
             _selectedWallGO = type switch {
-                Wall.Type.Horizontal => Instantiate(horizontalWall),
-                Wall.Type.Vertical => Instantiate(verticalWall),
+                Classes.Field.Wall.Type.Horizontal => Instantiate(horizontalWall),
+                Classes.Field.Wall.Type.Vertical => Instantiate(verticalWall),
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Wrong type")
             };
             _selectedWallRenderer = _selectedWallGO.GetComponent<Renderer>();

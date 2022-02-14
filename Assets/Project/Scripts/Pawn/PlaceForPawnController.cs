@@ -2,7 +2,7 @@
 using Project.Classes;
 using UnityEngine;
 
-namespace Project.Scripts {
+namespace Project.Scripts.Pawn {
     public class PlaceForPawnController : MonoBehaviour {
         [SerializeField] private GameManager gameManager;
         public event Action OnClick;

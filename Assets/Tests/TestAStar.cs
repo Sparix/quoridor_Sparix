@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Project.Classes;
+using Project.Classes.Field;
+using Project.Classes.Pathfinding;
 using UnityEngine;
 
 namespace Tests {

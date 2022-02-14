@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Project.Classes;
+using Project.Classes.Field;
+using Project.Classes.Player;
 using UnityEngine;
-using Type = Project.Classes.FieldSpace.BlockType;
+using Type = Project.Classes.Field.FieldSpace.BlockType;
 
 namespace Tests {
     public class TestField {

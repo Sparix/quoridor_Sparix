@@ -2,7 +2,7 @@
 using Project.Classes;
 using UnityEngine;
 
-namespace Project.Scripts {
+namespace Project.Scripts.Wall {
     public class WallPlacerController : MonoBehaviour {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private KeyCode verticalKeyCode = KeyCode.Alpha1;

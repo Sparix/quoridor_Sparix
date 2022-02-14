@@ -1,4 +1,5 @@
 ﻿using Project.Classes;
+using Project.Classes.Player;
 using TMPro;
 using UnityEngine;
 

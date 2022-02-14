@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Project.Classes.Field;
 
 namespace Project.Classes {
     public class Game {
         private bool _gameRunning;
         private Task _waitTask;
-        private IEnumerator<Player> _playersEnumerator;
-        public Field Field { get; private set; }
-        public List<Player> Players { get; private set; }
-        public Player CurrentPlayer { get; private set; }
+        private IEnumerator<Player.Player> _playersEnumerator;
+        public Field.Field Field { get; private set; }
+        public List<Player.Player> Players { get; private set; }
+        public Player.Player CurrentPlayer { get; private set; }
 
         public bool GameRunning {
             get => _gameRunning;
@@ -30,14 +31,14 @@ namespace Project.Classes {
 
         public event Action GameStarted;
         public event Action GameFinished;
-        public event Action<Player> GameFinishedWithWinner;
+        public event Action<Player.Player> GameFinishedWithWinner;
         public event Action OnNextTurn;
 
         public void AddHandlerForOnNextTurn(int index, Action newHandler) {
             OnNextTurn = OnNextTurn.AddHandlerOnIndex(index, newHandler);
         }
 
-        public Game(int ySize, int xSize, List<Player> players) {
+        public Game(int ySize, int xSize, List<Player.Player> players) {
             if (players.Count < 2) {
                 throw new ArgumentException("There are must be at least 2 players");
             }
@@ -58,7 +59,7 @@ namespace Project.Classes {
             _playersEnumerator = Players.GetEnumerator();
             // todo add reset methods to event
             GameStarted += () => { };
-            Field = new Field(xSize, ySize);
+            Field = new Field.Field(xSize, ySize);
             var yLen = Field.FieldSpaces.GetLength(0);
             var xLen = Field.FieldSpaces.GetLength(1);
             var positions = new Point[4] {
@@ -90,7 +91,7 @@ namespace Project.Classes {
             }
         }
 
-        private bool IsThereWinner(out Player winner) {
+        private bool IsThereWinner(out Player.Player winner) {
             winner = null;
             foreach (var player in Players) {
                 if (player.Pawn.IsWinner) {
@@ -122,7 +123,7 @@ namespace Project.Classes {
             _waitTask = WaitForMove();
         }
 
-        private void FinishGame(Player player) {
+        private void FinishGame(Player.Player player) {
             CancelGame();
             GameFinishedWithWinner?.Invoke(player);
         }
