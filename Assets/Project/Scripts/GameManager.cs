@@ -43,8 +43,8 @@ namespace Project.Scripts {
 
         public void CreatePlayerVsBot(bool playerMoveFirst = true) {
             var players = playerMoveFirst
-                ? new List<Player> {new LocalPlayer(), new StupidBot()}
-                : new List<Player> {new StupidBot(), new LocalPlayer()};
+                ? new List<Player> {new LocalPlayer(), new RandomBot()}
+                : new List<Player> {new RandomBot(), new LocalPlayer()};
             Game = new Game(Consts.DEFAULT_FIELD_SIZE_Y, Consts.DEFAULT_FIELD_SIZE_X, players);
             Initialized = true;
             Game.StartGame();
