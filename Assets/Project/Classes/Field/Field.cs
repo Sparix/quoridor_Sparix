@@ -51,9 +51,11 @@ namespace Project.Classes.Field {
 
         public FieldSpace[,] FieldSpaces { get; }
         private List<Pawn> _pawns = new List<Pawn>();
+        private List<Wall> _allWalls = new List<Wall>();
         public List<Pawn> Pawns => new List<Pawn>((Pawn[]) _pawns.ToArray().Clone());
 
         public event Action OnFieldSizeChanged;
+        public event Action<Wall> OnWallPlaced;
 
         private Point[] relativePointsHor = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
         private Point[] relativePointsVer = {new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)};
@@ -67,8 +69,8 @@ namespace Project.Classes.Field {
             YSize = ySize;
             _pawns = pawns.ToList();
 
-            var n = ySize * 2 - 1;
-            var m = xSize * 2 - 1;
+            var n = YSize * 2 - 1;
+            var m = XSize * 2 - 1;
 
             FieldSpaces = new FieldSpace[n, m];
             for (var y = 0; y < n; y++) {
@@ -76,6 +78,10 @@ namespace Project.Classes.Field {
                     FieldSpaces[y, x] = y.IsEven() && x.IsEven()
                         ? new FieldSpace(BlockType.Platform)
                         : new FieldSpace();
+                    if (y.IsOdd() && x.IsOdd()) {
+                        _allWalls.Add(new Wall(y, x, Wall.Type.Horizontal));
+                        _allWalls.Add(new Wall(y, x, Wall.Type.Vertical));
+                    }
                 }
             }
 
@@ -89,6 +95,17 @@ namespace Project.Classes.Field {
             XSize = fieldSpaces.GetLength(1);
             FieldSpaces = fieldSpaces;
             Pawns.AddRange(pawns);
+
+            var n = YSize * 2 - 1;
+            var m = XSize * 2 - 1;
+            for (var y = 0; y < n; y++) {
+                for (var x = 0; x < m; x++) {
+                    if (y.IsOdd() && x.IsOdd()) {
+                        _allWalls.Add(new Wall(y, x, Wall.Type.Horizontal));
+                        _allWalls.Add(new Wall(y, x, Wall.Type.Vertical));
+                    }
+                }
+            }
         }
 
         public bool TryAddPawn(Pawn pawn) {
@@ -147,6 +164,7 @@ namespace Project.Classes.Field {
         public bool TrySetWall(Wall wall) {
             if (!CanSetWall(wall)) return false;
             SetWall(wall);
+            OnWallPlaced?.Invoke(wall);
             return true;
         }
 
@@ -164,6 +182,10 @@ namespace Project.Classes.Field {
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public List<Wall> GetPossibleWallPositions() {
+            return _allWalls.Where(CanSetWall).ToList();
         }
 
         public void Clear() {

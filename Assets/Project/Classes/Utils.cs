@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Project.Classes {
     public static class Utils {
+        public static Random Random = new Random();
         public static bool IsEven(this int num) => num % 2 == 0;
         public static bool IsOdd(this int num) => num % 2 == 1;
 
@@ -19,6 +20,8 @@ namespace Project.Classes {
 
             return result;
         }
+
+        public static T GetRandom<T>(this List<T> list) => list[Random.Next(list.Count)];
 
         public static T[,] DeepCopy<T>(this T[,] obj) where T : ICloneable {
             var n = obj.GetLength(0);

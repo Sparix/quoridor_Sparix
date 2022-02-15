@@ -6,9 +6,10 @@ namespace Project.Classes.Player {
     public abstract class Bot : Player {
         public Bot(Pawn pawn = null) : base(pawn) { }
         
-        public sealed override Task MakeMove() {
+        public sealed override async Task MakeMove() {
+            await Task.Delay(100);
             GetNextMove()();
-            return base.MakeMove();
+            await base.MakeMove();
         }
 
         protected abstract Action GetNextMove();
