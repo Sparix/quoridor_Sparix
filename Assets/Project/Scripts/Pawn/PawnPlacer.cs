@@ -17,7 +17,7 @@ namespace Project.Scripts.Pawn {
         private void Start() {
             CheckInitialization();
             FillUpdatePositions();
-            gameManager.OnGameModeChosen += OnGameMoveChosen; // todo try replace with Game.GameStart
+            gameManager.OnGameModeChosen += OnGameMoveChosen; 
         }
 
         private void CheckInitialization() {

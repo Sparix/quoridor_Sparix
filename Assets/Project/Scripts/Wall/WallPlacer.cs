@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Project.Classes;
 using UnityEngine;
 
@@ -24,6 +25,11 @@ namespace Project.Scripts.Wall {
             CheckInitialization();
             Subscribe();
             InitBoardPlane();
+            gameManager.OnGameModeChosen += OnGameMoveChosen;
+        }
+
+        private void OnGameMoveChosen() {
+            gameManager.Game.Field.OnWallPlaced += ShowWall;
         }
 
         private void CheckInitialization() {
@@ -39,6 +45,16 @@ namespace Project.Scripts.Wall {
 
         private void Unsubscribe() {
             UnsubscribeFromControllerEvents();
+        }
+
+        private void ShowWall(Classes.Field.Wall wall) {
+            var wallPlace = places.First(place => place.GetY == wall.Y && place.GetX == wall.X);
+            if (wall.WallType == Classes.Field.Wall.Type.Horizontal) {
+                wallPlace.ActivateHorizontalWall();
+            }
+            else {
+                wallPlace.ActivateVerticalWall();
+            }
         }
 
         private void InitBoardPlane() {
@@ -80,16 +96,14 @@ namespace Project.Scripts.Wall {
 
         private void TrySetWall() {
             if (_selectedWall == null) return;
-            if (gameManager.CurrentPlayer.TrySetWall(new Classes.Field.Wall(_closestPlace.GetY, _closestPlace.GetX, _type))) {
+            if (gameManager.CurrentPlayer.TrySetWall(new Classes.Field.Wall(_closestPlace.GetY, _closestPlace.GetX,
+                _type))) {
                 // if (_selectedWall != null && gameManager.Field.TrySetWall(_selectedWall)) {
                 _selectedWallGO.transform.parent = _closestPlace.gameObject.transform;
                 _selectedWallRenderer.material.color = Color.white;
-                _selectedWallGO = null;
-                PlacingWall = false;
             }
-            else {
-                DestroySelectedWall();
-            }
+
+            DestroySelectedWall();
         }
 
         private void UpdateSelectedWallPos() {
@@ -144,12 +158,7 @@ namespace Project.Scripts.Wall {
         }
 
         private void ChangeWallOnAvailability(bool available) {
-            if (available) {
-                _selectedWallRenderer.material.color = Color.green;
-            }
-            else {
-                _selectedWallRenderer.material.color = Color.red;
-            }
+            _selectedWallRenderer.material.color = available ? Color.green : Color.red;
         }
     }
 }
